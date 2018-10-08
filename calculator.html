@@ -1,0 +1,307 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title>Calculator</title>
+
+    <script>
+        "use strict";
+
+        //declare some variables
+        var formulastring = "";
+        var currentnumber = "0";
+        var action = "";
+        var doneequals = "";
+        var total = 0.0;
+
+        function operation(button) {
+            //run code for each button
+            //debugger;
+
+            switch (button) {
+                case "CV":
+                    if (doneequals == "1") {
+                        currentnumber = "0";
+                        total = 0;
+                        action = "";
+                        formulastring = "";
+                        doneequals = "";
+
+                        document.getElementById("result").value = currentnumber;
+                        document.getElementById("formula").value = formulastring;
+                    } else {
+                        currentnumber = "0";
+                        document.getElementById("result").value = currentnumber;
+                    }
+                    break;
+
+                case "CA":
+                    currentnumber = "0";
+                    total = 0;
+                    action = "";
+                    formulastring = "";
+                    doneequals = "";
+
+                    document.getElementById("result").value = currentnumber;
+                    document.getElementById("formula").value = formulastring;
+                    break;
+
+                case "<":
+                    //delete 1 letter
+                    if (doneequals == "1") {
+                        doneequals = "";
+                        currentnumber = "0";
+                        formulastring = "";
+                        action = "";
+                        document.getElementById("formula").value = "";
+                    } else {
+                        if (currentnumber.length > 1) {
+                            currentnumber = currentnumber.slice(0, currentnumber.length - 1)
+                        } else {
+                            currentnumber = "0";
+                        }
+                    }
+                    document.getElementById("result").value = currentnumber;
+                    break;
+
+                case "/":
+                    operator(button)
+                    break;
+
+                case "X":
+                    operator(button)
+                    break;
+
+                case "-":
+                    operator(button)
+                    break;
+
+                case "+":
+                    operator(button)
+                    break;
+
+                case "=":
+                    //calculate result
+                    if (action != "") {
+                        equals();
+                        doneequals = "1";
+                    }
+                    break;
+
+                case ".":
+                    //reset if equals done
+                    if (doneequals == "1") {
+                        doneequals = "";
+                        currentnumber = "0";
+                        formulastring = "";
+                        action = "";
+                        document.getElementById("formula").value = "";
+                    }
+
+                    //add decimal once
+                    if (currentnumber.indexOf(".") == -1) {
+                        currentnumber += button;
+                    }
+
+                    document.getElementById("result").value = currentnumber;
+                    break;
+
+                case "c":
+                    //reset if equals done
+                    if (doneequals == "1") {
+                        currentnumber = total.toString();
+                    }
+
+                    //change sign
+                    if (currentnumber == "0") {
+                        //do nothing
+                    } else if (currentnumber.indexOf("-") == -1) {
+                        currentnumber = "-" + currentnumber
+                    } else {
+                        currentnumber = currentnumber.slice(1, currentnumber.length);
+                    }
+
+                    if (doneequals == "1") {
+                        doneequals = "";
+                        action = "";
+                        formulastring = "";
+                        document.getElementById("formula").value = currentnumber;
+                    }
+
+                    document.getElementById("result").value = currentnumber;
+                    break;
+
+                default:
+                    if (!isNaN(button)) {
+                        //for number buttons
+
+                        //reset if equals done
+                        if (doneequals == "1") {
+                            doneequals = "";
+                            currentnumber = "0";
+                            formulastring = "";
+                            action = "";
+                            document.getElementById("formula").value = "";
+                        }
+
+                        currentnumber += button;
+
+                        //remove leading default 0
+                        if (currentnumber.slice(0, 1) == "0" && currentnumber.length > 1 && currentnumber.slice(1, 2) != ".") {
+                            currentnumber = currentnumber.slice(1, currentnumber.length);
+                        }
+
+                        document.getElementById("result").value = currentnumber;
+
+                    } else {
+                        //remove after finished testing
+						//alert("fix button");
+					}					
+            }            
+        }
+
+        function operator(buttonaction) {
+            //debugger;
+            if (doneequals == "1") {
+                doneequals = "";
+                currentnumber = total.toString();
+                formulastring = "";
+                action = "";
+            }
+
+            if (action != "") {
+                equals()
+                action = buttonaction;
+                formulastring += " " + buttonaction;
+            } else {
+                if (isNaN(currentnumber)) {
+                    total = 0;
+                } else {
+                    total = parseFloat(currentnumber);
+                }
+
+                action = buttonaction;
+                formulastring += " " + currentnumber + " " + buttonaction;
+            }
+
+            formulastring = formulastring.trim();
+            document.getElementById("formula").value = formulastring;
+            currentnumber = "0";
+
+        }
+
+        function equals() {
+            var yvalue = 0;
+            
+            //make sure it is a number
+            if (isNaN(currentnumber)) {
+                currentnumber = "0";
+            }
+            yvalue = parseFloat(currentnumber);
+
+            if (doneequals == "1") {
+                formulastring += " " + action + " " + currentnumber;
+            } else {
+                formulastring += " " + currentnumber;
+            }
+
+            //calculate the result
+            if (action == "X") {
+                total = total * yvalue;
+            } else if (action == "/") {
+                if (yvalue == 0) {
+                    currentnumber = "0";
+                    total = 0;
+                    action = "";
+                    doneequals = "";
+
+                    document.getElementById("result").value = "Can't divide by zero";
+                    document.getElementById("formula").value = formulastring;
+                    formulastring = "";
+                    
+                    return;
+                } else {
+                    total = total / yvalue;
+                }
+            } else if (action == "-") {
+                total = total - yvalue;
+            } else if (action == "+") {
+                total = total + yvalue;
+            } else {
+                //disable after finished testing
+                //alert("fix action");
+                return;
+            }
+
+            //update the display
+            document.getElementById("result").value = total.toString();
+            document.getElementById("formula").value = formulastring;
+       }
+
+        window.onload = function () {
+            //create onclick events for all buttons
+            document.getElementById("Value0").onclick = function () { operation("0") };
+			document.getElementById("Value1").onclick = function () { operation("1") };
+            document.getElementById("Value2").onclick = function () { operation("2") };
+            document.getElementById("Value3").onclick = function () { operation("3") };
+            document.getElementById("Value4").onclick = function () { operation("4") };
+            document.getElementById("Value5").onclick = function () { operation("5") };
+            document.getElementById("Value6").onclick = function () { operation("6") };
+            document.getElementById("Value7").onclick = function () { operation("7") };
+            document.getElementById("Value8").onclick = function () { operation("8") };
+            document.getElementById("Value9").onclick = function () { operation("9") };
+            document.getElementById("Multiply").onclick = function () { operation("X") };
+            document.getElementById("Equals").onclick = function () { operation("=") };
+            document.getElementById("ClearValue").onclick = function () { operation("CV") };
+            document.getElementById("ClearAll").onclick = function () { operation("CA") };
+            document.getElementById("delete").onclick = function () { operation("<") };
+            document.getElementById("divide").onclick = function () { operation("/") };
+            document.getElementById("period").onclick = function () { operation(".") };
+            document.getElementById("plus").onclick = function () { operation("+") };
+            document.getElementById("Subtract").onclick = function () { operation("-") };
+            document.getElementById("change").onclick = function () { operation("c") };
+        }
+    </script>
+    
+</head>
+<body>
+    
+        <input id="formula" readonly="readonly" type="text" style="text-align: right; width: 329px;" title="Formula" /> <br/>
+        <input id="result" type="text" readonly="readonly" style="text-align: right; font-size: 26px; width: 329px;" value="0" title="Result" />&nbsp;<br/>
+        <table>
+            <tr>
+                <td>
+        <input id="ClearValue" type="button" value="CE" style="height: 50px; width: 80px; font-size: 16px;" title="Clear Last Number" /></td>
+                <td><input id="ClearAll" type="button" value="C" style="height: 50px; width: 80px; font-size: 16px;" title="Clear All" /></td>
+                <td><input id="delete" type="button" value="&lt;X" dir="ltr" style="height: 50px; width: 80px; font-size: 16px;" title="Delete last number typed" /></td>
+                <td><input id="divide" type="button" value="÷" style="height: 50px; width: 80px; font-size: 16px;" title="Divide" /></td>
+            </tr>
+            <tr>
+                <td><input id="Value7" type="button" value="7" style="height: 50px; width: 80px; font-size: 24px;" /></td>
+                <td><input id="Value8" type="button" value="8" style="height: 50px; width: 80px; font-size: 24px;" /></td>
+                <td><input id="Value9" type="button" value="9" style="height: 50px; width: 80px; font-size: 24px;" /></td>
+                <td><input id="Multiply" type="button" value="X" style="height: 50px; width: 80px; font-size: 16px;" title="Multiply" /></td>
+            </tr>
+            <tr>
+                <td><input id="Value4" type="button" value="4" style="height: 50px; width: 80px; font-size: 24px;" /></td>
+                <td><input id="Value5" type="button" value="5" style="height: 50px; width: 80px; font-size: 24px;" /></td>
+                <td><input id="Value6" type="button" value="6" style="height: 50px; width: 80px; font-size: 24px;" /></td>
+                <td><input id="Subtract" type="button" value="-" style="height: 50px; width: 80px; font-size: 16px;" title="Subtract" /></td>
+            </tr>
+            <tr>
+                <td><input id="Value1" type="button" value="1" style="height: 50px; width: 80px; font-size: 24px;" /></td>
+                <td><input id="Value2" type="button" value="2" style="height: 50px; width: 80px; font-size: 24px;" /></td>
+                <td><input id="Value3" type="button" value="3" style="height: 50px; width: 80px; font-size: 24px;" /></td>
+                <td><input id="plus" type="button" value="+" style="height: 50px; width: 80px; font-size: 16px;" title="Add" /></td>
+            </tr>
+            <tr>
+                <td><input id="change" type="button" value="±" style="height: 50px; width: 80px; font-size: 16px;" title="Change Sign" /></td>
+                <td><input id="Value0" type="button" value="0" style="height: 50px; width: 80px; font-size: 24px;" /></td>
+                <td><input id="period" type="button" value="." style="height: 50px; width: 80px; font-size: 16px;" /></td>
+                <td><input id="Equals" type="button" value="=" style="height: 50px; width: 80px; font-size: 16px;" title="Equals" /></td>
+            </tr>
+        </table>
+
+</body>
+</html>
