@@ -1,11 +1,11 @@
 //javascript to run a calculator
 //declare some variables
-var action = "";
-var currentnumber = "0";
-var doneequals = "";
-var formulastring = "";
-var newaction = "";
-var total = 0.0;
+let action = "";
+let currentnumber = "0";
+let doneequals = "";
+let formulastring = "";
+let newaction = "";
+let total = 0.0;
 function resetVars() {
     //clear all variables to start new calculation
     action = "";
@@ -123,8 +123,8 @@ function operation(button) {
             else if (doneequals === "2") {
                 //fix formula when using square root
                 formulastring = " " + formulastring;
-                var space = formulastring.lastIndexOf(" ");
-                var prefix = formulastring.slice(space + 1, space + 2);
+                let space = formulastring.lastIndexOf(" ");
+                let prefix = formulastring.slice(space + 1, space + 2);
                 if (prefix === "-") {
                     formulastring = formulastring.slice(0, space + 1) + formulastring.slice(space + 2, formulastring.length);
                 }
@@ -158,8 +158,8 @@ function operation(button) {
 }
 function operator(buttonaction) {
     //check the operation button pressed and prepare for the next step
-    var yvalue = 0;
-    var space = 0;
+    let yvalue = 0;
+    let space = 0;
     if (doneequals === "1") {
         //use previous total
         doneequals = "";
@@ -297,7 +297,7 @@ function operator(buttonaction) {
 }
 function equals() {
     //calculate the result
-    var yvalue = 0;
+    let yvalue = 0;
     yvalue = parseFloat(currentnumber);
     if (isNaN(yvalue)) {
         yvalue = 0;
