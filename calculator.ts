@@ -1,4 +1,5 @@
-﻿//javascript to run a calculator
+﻿/*jslint browser:true */
+//javascript to run a calculator
 
 //declare some variables
 let action:string = "";
@@ -33,6 +34,8 @@ function newCalc() {
 function operation(button:string) {
     //run code for each button
     //debugger;
+    let space: number;
+    let prefix: string;
 
     switch (button) {
         case "CV":
@@ -118,11 +121,9 @@ function operation(button:string) {
             if (doneequals === "1") {
                 currentnumber = total.toString();
             }
-            if (currentnumber === "0") {
-                //do nothing
-            } else if (currentnumber.indexOf("-") === -1) {
+            if (currentnumber.indexOf("-") === -1) {
                 currentnumber = "-" + currentnumber;
-            } else {
+            } else if (currentnumber !== "0") {
                 currentnumber = currentnumber.slice(1, currentnumber.length);
             }
 
@@ -137,8 +138,8 @@ function operation(button:string) {
             } else if (doneequals === "2") {
                 //fix formula when using square root
                 formulastring = " " + formulastring;
-                let space:number = formulastring.lastIndexOf(" ");
-                let prefix:string = formulastring.slice(space + 1, space + 2);
+                space = formulastring.lastIndexOf(" ");
+                prefix = formulastring.slice(space + 1, space + 2);
 
                 if (prefix === "-") {
                     formulastring = formulastring.slice(0, space + 1) + formulastring.slice(space + 2, formulastring.length);
@@ -152,7 +153,8 @@ function operation(button:string) {
             break;
 
         default:
-            if (!isNaN(parseInt(button))) {
+            space = parseInt(button);
+            if (!isNaN(space)) {
                 //for number buttons
                 if (doneequals === "1" || doneequals === "2") {
                     newCalc();
@@ -170,7 +172,7 @@ function operation(button:string) {
 
             } else {
                 //for testing missing button code
-                alert("Button is not implemented yet");
+                window.alert("Button is not implemented yet");
             }
     }
 }
@@ -328,9 +330,7 @@ function equals() {
 
     if (doneequals === "1") {
         formulastring += " " + action + " " + currentnumber;
-    } else if (doneequals === "2") {
-        //do nothing
-    } else {
+    } else if (doneequals !== "2") {
         formulastring += " " + currentnumber;
     }
 
@@ -354,7 +354,7 @@ function equals() {
 
     } else {
         //check if button code is missing
-        alert("Button is not implemented yet");
+        window.alert("Button is not implemented yet");
         return;
     }
 
